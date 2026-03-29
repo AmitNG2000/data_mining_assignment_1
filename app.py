@@ -15,7 +15,7 @@ st.set_page_config(
 
 # Main page
 st.title("📊 Data Mining Assignment 1")
-st.markdown("### By Amit - BGU")
+st.markdown("By Amit Ner Gaon")
 
 st.markdown("---")
 

@@ -22,7 +22,8 @@ from utils import (
     get_total_births_by_year, 
     execute_query, 
     is_select_only,
-    get_peak_decade
+    get_peak_decade,
+    ensure_database_ready
 )
 
 # Page configuration
@@ -38,6 +39,16 @@ st.markdown("""
 Explore US baby name trends from 1880-2014 using interactive visualizations and custom SQL queries.
 Dataset: 1.8M records from NationalNames.csv
 """)
+
+# Run one-time database readiness check per user session.
+if 'baby_names_db_checked' not in st.session_state:
+    with st.spinner("Checking database setup..."):
+        _, db_message = ensure_database_ready()
+
+
+    st.success(db_message)
+
+    st.session_state['baby_names_db_checked'] = True
 
 # Sidebar navigation
 st.sidebar.title("Navigation")
@@ -138,7 +149,7 @@ if feature == "📈 Name Popularity Over Time":
                     yaxis_title=y_label
                 )
                 
-                st.plotly_chart(fig, use_container_width=True)
+                st.plotly_chart(fig, width='stretch')
                 
                 # Show summary statistics
                 st.subheader("Summary Statistics")
@@ -160,6 +171,16 @@ if feature == "📈 Name Popularity Over Time":
 elif feature == "🔍 Custom SQL Queries":
     st.header("🔍 Custom SQL Query Panel")
     st.markdown("Run custom SELECT queries against the baby names database.")
+
+    # Keep query state and last execution result across reruns.
+    if "custom_sql_query" not in st.session_state:
+        st.session_state["custom_sql_query"] = "SELECT * FROM names LIMIT 10"
+    if "sql_last_result" not in st.session_state:
+        st.session_state["sql_last_result"] = None
+    if "sql_last_error" not in st.session_state:
+        st.session_state["sql_last_error"] = None
+    if "sql_last_success" not in st.session_state:
+        st.session_state["sql_last_success"] = None
     
     # Pre-built example queries
     st.subheader("📝 Example Queries")
@@ -211,64 +232,87 @@ LIMIT 10"""
     with col3:
         if st.button("📉 Names That Disappeared"):
             selected_example = "Names That Disappeared"
+
+    if selected_example:
+        st.session_state["custom_sql_query"] = example_queries[selected_example]
     
     # SQL input area
     st.subheader("✍️ Write Your Query")
     
-    default_query = example_queries.get(selected_example, "SELECT * FROM names LIMIT 10")
-    
-    query = st.text_area(
+    st.text_area(
         "SQL Query",
-        value=default_query,
         height=150,
-        help="Only SELECT statements are allowed for safety"
+        help="Only SELECT statements are allowed for safety",
+        key="custom_sql_query"
     )
     
     if st.button("🚀 Execute Query", type="primary"):
+        query = st.session_state["custom_sql_query"]
+
         # Validate query safety
         is_safe, error_msg = is_select_only(query)
         
         if not is_safe:
-            st.error(f"🚫 Query Blocked: {error_msg}")
-            st.info("💡 Only SELECT statements are allowed. Please remove any INSERT, UPDATE, DELETE, DROP, or other modification commands.")
+            st.session_state["sql_last_result"] = None
+            st.session_state["sql_last_success"] = None
+            st.session_state["sql_last_error"] = f"🚫 Query Blocked: {error_msg}"
         else:
             # Execute query
             with st.spinner("Executing query..."):
                 success, result = execute_query(query)
             
             if success:
-                st.success(f"✓ Query executed successfully! ({len(result)} rows returned)")
-                
-                # Display results as table
-                st.subheader("📋 Results")
-                st.dataframe(result, use_container_width=True)
-                
-                # Try to auto-generate a chart if applicable
-                if len(result) > 0:
-                    numeric_cols = result.select_dtypes(include=['number']).columns.tolist()
-                    categorical_cols = result.select_dtypes(include=['object']).columns.tolist()
-                    
-                    # If we have at least one numeric and one categorical column, offer visualization
-                    if len(numeric_cols) > 0 and len(categorical_cols) > 0:
-                        st.subheader("📊 Visualization")
-                        
-                        chart_col1, chart_col2 = st.columns(2)
-                        with chart_col1:
-                            x_col = st.selectbox("X-axis", categorical_cols + numeric_cols, key="x_axis")
-                        with chart_col2:
-                            y_col = st.selectbox("Y-axis", numeric_cols, key="y_axis")
-                        
-                        chart_type = st.radio("Chart Type", ["Bar", "Line"], horizontal=True)
-                        
-                        if chart_type == "Bar":
-                            fig = px.bar(result, x=x_col, y=y_col, title="Query Results Visualization")
-                        else:
-                            fig = px.line(result, x=x_col, y=y_col, title="Query Results Visualization")
-                        
-                        st.plotly_chart(fig, use_container_width=True)
+                st.session_state["sql_last_result"] = result
+                st.session_state["sql_last_success"] = f"✓ Query executed successfully! ({len(result)} rows returned)"
+                st.session_state["sql_last_error"] = None
             else:
-                st.error(f"❌ Query Error: {result}")
-                st.info("💡 Check your SQL syntax and make sure the table/column names are correct.")
+                st.session_state["sql_last_result"] = None
+                st.session_state["sql_last_success"] = None
+                st.session_state["sql_last_error"] = f"❌ Query Error: {result}"
+
+    if st.session_state["sql_last_success"]:
+        st.success(st.session_state["sql_last_success"])
+
+    if st.session_state["sql_last_error"]:
+        st.error(st.session_state["sql_last_error"])
+
+    result_df = st.session_state["sql_last_result"]
+    if result_df is not None:
+        st.subheader("📋 Results")
+        st.dataframe(result_df, width='stretch', hide_index=True)
+
+        # Try to auto-generate a chart if applicable
+        if len(result_df) > 0:
+            numeric_cols = result_df.select_dtypes(include=['number']).columns.tolist()
+            categorical_cols = result_df.select_dtypes(include=['object']).columns.tolist()
+
+            # If we have at least one numeric and one categorical column, offer visualization
+            if len(numeric_cols) > 0 and len(categorical_cols) > 0:
+                st.subheader("📊 Visualization")
+
+                x_options = categorical_cols + numeric_cols
+                y_options = numeric_cols
+
+                # Keep axis selections stable across reruns, but reset if columns changed.
+                if st.session_state.get("sql_x_axis") not in x_options:
+                    st.session_state["sql_x_axis"] = x_options[0]
+                if st.session_state.get("sql_y_axis") not in y_options:
+                    st.session_state["sql_y_axis"] = y_options[0]
+
+                chart_col1, chart_col2 = st.columns(2)
+                with chart_col1:
+                    x_col = st.selectbox("X-axis", x_options, key="sql_x_axis")
+                with chart_col2:
+                    y_col = st.selectbox("Y-axis", y_options, key="sql_y_axis")
+
+                chart_type = st.radio("Chart Type", ["Bar", "Line"], horizontal=True, key="sql_chart_type")
+
+                if chart_type == "Bar":
+                    fig = px.bar(result_df, x=x_col, y=y_col, title="Query Results Visualization")
+                else:
+                    fig = px.line(result_df, x=x_col, y=y_col, title="Query Results Visualization")
+
+                st.plotly_chart(fig, width='stretch')
 
 # ============================================================================
 # FEATURE 3: Your Name's Peak Decade
@@ -322,7 +366,7 @@ elif feature == "🏆 Your Name's Peak Decade":
                 yaxis_title="Total Babies"
             )
             
-            st.plotly_chart(fig, use_container_width=True)
+            st.plotly_chart(fig, width='stretch')
             
             # Show detailed statistics
             st.subheader("📊 Decade-by-Decade Breakdown")
@@ -334,7 +378,7 @@ elif feature == "🏆 Your Name's Peak Decade":
             display_df.columns = ['Decade', 'Total Babies', 'Rank']
             display_df = display_df.sort_values('Rank')
             
-            st.dataframe(display_df, use_container_width=True, hide_index=True)
+            st.dataframe(display_df, width='stretch', hide_index=True)
             
             # Peak decade stats
             peak_row = decade_data[decade_data['decade'] == peak_decade].iloc[0]
@@ -350,7 +394,5 @@ elif feature == "🏆 Your Name's Peak Decade":
 # Footer
 st.markdown("---")
 st.markdown("""
-**Data Source**: NationalNames.csv (US Baby Names 1880-2014)  
-**Database**: SQLite with optimized indexes on (name, year) and (year, gender)  
-**Task**: Data Mining Assignment 1 - Baby Names Explorer
+**Data Source**: [US Baby Names (Kaggle)](https://www.kaggle.com/datasets/kaggle/us-baby-names)
 """)

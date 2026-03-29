@@ -18,6 +18,33 @@ def get_db_connection():
     """
     return sqlite3.connect(str(DB_PATH))
 
+def ensure_database_ready() -> Tuple[bool, str]:
+    """
+    Ensure the SQLite database and required table exist.
+
+    Returns:
+        Tuple[bool, str]: (database_was_created, status_message)
+    """
+    if not DB_PATH.exists():
+        from database import create_database
+        create_database()
+        return True, "Database created successfully."
+
+    conn = None
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        # Fast check that the required table exists and is queryable.
+        cursor.execute("SELECT 1 FROM names LIMIT 1")
+        return False, "Database is ready (no changes needed)."
+    except sqlite3.Error:
+        from database import create_database
+        create_database()
+        return True, "Database was missing required schema and has been rebuilt."
+    finally:
+        if conn is not None:
+            conn.close()
+
 def execute_query(query: str, params: tuple = ()) -> Tuple[bool, any]:
     """
     Execute a SQL query and return results.
