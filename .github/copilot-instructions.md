@@ -69,6 +69,18 @@ Choose one framework per task:
 ### Python Version
 Python 3.14.2 (use `py` launcher on Windows)
 
+### Environment and Dependencies
+- Always run Python commands inside the project virtual environment (`dm1_env`).
+- Before executing scripts, activate the environment on Windows PowerShell:
+```powershell
+& .\dm1_env\Scripts\Activate.ps1
+```
+- If a code change introduces a new dependency or updates package usage, update `requirements.txt` in the project root.
+- Prefer reproducible installs from `requirements.txt`:
+```bash
+pip install -r requirements.txt
+```
+
 ### Database Access
 ```python
 import sqlite3

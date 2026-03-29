@@ -1,3 +1,7 @@
 streamlit
 pandas
 plotly
+pony
+wikipedia
+beautifulsoup4
+requests

@@ -48,15 +48,7 @@ source dm1_env/bin/activate
 pip install -r requirements.txt
 ```
 
-#### 3. Set Up Task 1 Database (One-Time Setup)
-
-```bash
-cd task1
-python database.py
-cd ..
-```
-
-#### 4. Run the Multi-Page App
+#### 3. Run the Multi-Page App
 
 ```bash
 # Make sure virtual environment is activated
@@ -65,74 +57,6 @@ streamlit run app.py
 
 The app will open at `http://localhost:8501`
 
-### Deactivating Virtual Environment
-
-When you're done working:
-```bash
-deactivate
-```
-
----
-
-## 📋 Assignment Tasks
-
-### ✅ Task 1: Baby Names Explorer (COMPLETED)
-**Status**: ✅ Complete  
-**Points**: 30/30 expected
-
-Interactive exploration of US baby name trends (1880-2014) with:
-- 📈 Name Popularity Over Time (count/percentage toggle)
-- 🔍 Custom SQL Query Panel (safe execution + examples)
-- 🏆 Peak Decade Finder
-
-**Database**: 1,825,433 records in SQLite with optimized indexes  
-**Tech**: Streamlit, SQLite3, Plotly Express, Pandas
-
-[View Task 1 Documentation →](task1/README.md)
-
----
-
-### 🔲 Task 2: Oscar Actor Explorer (Coming Soon)
-**Status**: 📝 Planned  
-**Points**: 25
-
-ORM-based actor profile app with:
-- Actor search and profile cards
-- Wikipedia API integration
-- Win rates and statistics
-- Pattern discovery
-
-**Tech**: PonyORM/SQLAlchemy/Peewee, Wikipedia API
-
----
-
-### 🔲 Task 3: Pokémon Battle Arena (Coming Soon)
-**Status**: 📝 Planned  
-**Points**: 25
-
-Database-driven battle game with:
-- Team selection from database
-- Battle mechanics based on stats
-- Cheat code system (database modifications)
-- Type effectiveness
-
-**Tech**: SQLite/ORM, Interactive UI
-
----
-
-### 🔲 Task 4: SQL Learning Game (Coming Soon)
-**Status**: 📝 Planned  
-**Points**: 25 + bonus
-
-Interactive platform teaching SQL to beginners:
-- Progressive challenges (SELECT → JOIN)
-- Real SQLite database
-- Feedback system
-- Gamification elements
-
-**Tech**: Streamlit, Creative UX design
-
----
 
 ## 🏗️ Project Structure
 
@@ -145,20 +69,10 @@ data_mining_assignment_1/
 │   ├── 3_⚔️_Pokémon_Battle_Arena.py
 │   └── 4_🎮_SQL_Learning_Game.py
 ├── task1/                          # Task 1: Baby Names
-│   ├── database.py                 # Database setup
-│   ├── utils.py                    # SQL utilities
-│   ├── babynames.db                # SQLite database (98 MB)
-│   └── README.md                   # Task 1 documentation
-├── task2/                          # Task 2: Oscar Actors (TBD)
-├── task3/                          # Task 3: Pokémon Battle (TBD)
-├── task4/                          # Task 4: SQL Learning (TBD)
+├── task2/                          # Task 2: Oscar Actors
+├── task3/                          # Task 3: Pokémon Battle
+├── task4/                          # Task 4: SQL Learning
 ├── data/                           # Datasets
-├── .github/                        # GitHub configuration
-│   ├── copilot-instructions.md     # Copilot AI instructions
-│   └── co-pilot-reports/           # Development reports
-│       ├── task1/                  # Task 1 completion reports
-│       └── RESTRUCTURE_SUMMARY.md
-├── dm1_env/                        # Virtual environment (gitignored)
 ├── requirements.txt                # Python dependencies
 └── README.md                       # This file
 ```
