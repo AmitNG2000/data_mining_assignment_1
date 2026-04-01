@@ -2,13 +2,24 @@
 Data loader script for Oscar Awards dataset
 Loads data from CSV into SQLite using PonyORM
 """
+from pathlib import Path
+
 import pandas as pd
-from database import (
-    setup_database, db, Person, Film, Category, Nomination,
-    get_or_create_person, get_or_create_film, get_or_create_category
-)
+
+from task2.database import (
+        setup_database, db, Person, Film, Category, Nomination,
+        get_or_create_person, get_or_create_film, get_or_create_category
+    )
+
 from pony.orm import db_session, commit
 import sys
+
+
+BASE_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = BASE_DIR.parent
+DB_NAME = 'oscars.db'
+DB_PATH = BASE_DIR / DB_NAME
+CSV_PATH = PROJECT_ROOT / 'task2' / 'oscar_awards_full_data.csv'
 
 
 def clean_name(name):
@@ -27,7 +38,7 @@ def parse_winner(value):
     return False
 
 
-def load_oscar_data(csv_path, db_path='oscars.db'):
+def load_oscar_data(csv_path = CSV_PATH, db_path = DB_PATH):
     """
     Load Oscar awards data from CSV into database
     
@@ -35,6 +46,9 @@ def load_oscar_data(csv_path, db_path='oscars.db'):
         csv_path: Path to oscar_awards_full_data.csv
         db_path: Path to SQLite database file
     """
+    csv_path = str(csv_path)
+    db_path = str(db_path)
+
     print(f"Loading data from {csv_path}...")
     
     # Read CSV with tab separator

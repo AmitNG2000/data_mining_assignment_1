@@ -5,3 +5,7 @@ pony
 wikipedia
 beautifulsoup4
 requests
+pony
+wikipedia
+beautifulsoup4
+requests

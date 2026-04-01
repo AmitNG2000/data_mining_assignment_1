@@ -2,28 +2,42 @@
 
 ## Project Overview
 
-This is a university data mining course assignment focused on SQL, ORMs, and interactive data analysis applications. The project consists of 4 tasks:
+This is a university data mining course assignment focused on SQL, ORMs, and interactive data analysis applications. The project consists of 4 tasks integrated into a **single multi-page Streamlit application**.
 
-1. **Baby Names Explorer** - SQLite-based interactive name popularity analysis
-2. **Oscar Actor Explorer** - ORM-based (PonyORM/SQLAlchemy/Peewee) actor profile app with Wikipedia integration
-3. **Pokémon Battle Arena** - Database-driven battle game with cheat code system
-4. **SQL Learning Game** - Interactive platform teaching SQL to beginners
+### Multi-Page App Structure
+
+**ALL TASKS MUST BE IMPLEMENTED AS PAGES WITHIN A SHARED STREAMLIT APP** — not as separate standalone applications.
+
+- **Main app**: `app.py` (root level) - serves as the hub and home page
+- **Task pages**: Each task lives in `pages/` folder as separate Streamlit pages
+  - `pages/1_👶_Baby_Names_Explorer.py` - SQLite-based interactive name popularity analysis
+  - `pages/2_🎬_Oscar_Actor_Explorer.py` - ORM-based (PonyORM/SQLAlchemy/Peewee) actor profile app with Wikipedia integration
+  - `pages/3_⚔️_Pokémon_Battle_Arena.py` - Database-driven battle game with cheat code system
+  - `pages/4_🎮_SQL_Learning_Game.py` - Interactive platform teaching SQL to beginners
+- **Shared utilities**: For each task, database modules, helpers, and configurations in root-level folders (`task1/`, `task2/`, etc.)
+
+### Why Multi-Page Architecture?
+
+- Streamlit's native multi-page routing (`pages/` folder structure)
+- Shared database connections, utilities, and assets across tasks
+- Unified deployment strategy
+- Cleaner project structure for assignment submission
 
 ## Key Assignment Requirements
 
 ### LLM Usage Policy
 - **Code**: LLM assistance is explicitly encouraged for code generation
-- **Explanations**: Each task requires a written explanation **without LLM assistance** covering:
+- **Explanations**: Each task requires a written explanation covering:
   - What was built and how it works
   - Technology/library choices and rationale
   - Challenges encountered and solutions
-- **Understanding**: The student must be able to explain the solution in person
 
 ### Submission Requirements
-Each task needs:
-- Deployed app (Streamlit Cloud/HuggingFace Spaces/etc.) OR notebook OR screen recording
-- Written report (PDF/markdown, 1-2 pages) with personal explanations and findings
-- Code in repository with README and screenshots
+
+The **entire project is a single multi-page Streamlit app**. Submission includes:
+- **Deployed app** on Streamlit Cloud (recommended) OR screen recording of all 4 tasks running
+- **Code in repository** with proper structure (app.py, pages/, task folders, README)
+- **Written reports** (1-2 pages each) for each task explaining the implementation, not a single combined report
 
 ## Database & Schema Conventions
 
@@ -46,13 +60,16 @@ Each task needs:
 
 ## Technology Stack Recommendations
 
-### Interactive Apps
-Choose one framework per task:
-- Streamlit (recommended for rapid prototyping and deployment)
-- Gradio (good for ML-style interfaces)
-- Panel (Holoviz ecosystem integration)
-- Dash (Plotly-based, more customizable)
-- ipywidgets (Jupyter notebook integration)
+### Framework Requirement
+
+**REQUIRED: Streamlit for all tasks** — The entire project is a multi-page Streamlit application.
+
+Each task must be implemented as a Streamlit page that:
+- Lives in the `pages/` folder with numbered prefix (e.g., `1_TaskName.py`)
+- Can optionally import utilities and database modules from relevant task's folder
+- Follows Streamlit conventions for page structure and layout
+
+Do NOT create separate apps with Gradio, Panel, Dash, or other frameworks.
 
 ### ORM Options (Task 2)
 - **PonyORM**: Pythonic, generator-based queries, built-in ER diagram
@@ -69,12 +86,20 @@ Choose one framework per task:
 ### Python Version
 Python 3.14.2 (use `py` launcher on Windows)
 
+### Running the Multi-Page App
+
+```bash
+# Activate environment (Windows PowerShell)
+& .\dm1_env\Scripts\Activate.ps1
+
+# Run the Streamlit app
+streamlit run app.py
+```
+
+Streamlit will automatically discover all pages in the `pages/` folder and display them in the sidebar navigation.
+
 ### Environment and Dependencies
 - Always run Python commands inside the project virtual environment (`dm1_env`).
-- Before executing scripts, activate the environment on Windows PowerShell:
-```powershell
-& .\dm1_env\Scripts\Activate.ps1
-```
 - If a code change introduces a new dependency or updates package usage, update `requirements.txt` in the project root.
 - Prefer reproducible installs from `requirements.txt`:
 ```bash
@@ -95,13 +120,6 @@ results = cursor.fetchall()
 
 # Always close
 conn.close()
-```
-
-### PDF Extraction
-To read `HW1_instructions.pdf`:
-```bash
-py -m pip install pypdf
-py extract_pdf.py
 ```
 
 ## Data Files
@@ -192,13 +210,16 @@ db.generate_mapping(create_tables=True)
 ```
 
 ### Streamlit Deployment
+
 ```bash
 # requirements.txt must include all dependencies
 streamlit run app.py
 
-# Deploy to Streamlit Cloud (push to GitHub first)
+# Deploy to Streamlit Cloud (push to GitHub, then connect repo to Cloud)
 # Visit share.streamlit.io
 ```
+
+The multi-page app will deploy as a single unified application with all 4 tasks accessible from the sidebar.
 
 ## Testing & Validation
 
@@ -222,6 +243,7 @@ dangerous_queries = [
 
 ## Anti-Patterns to Avoid
 
+❌ **Creating standalone apps instead of multi-page pages** — all 4 tasks must be Streamlit pages in the `pages/` folder, not separate applications with different frameworks  
 ❌ Hardcoding Pokémon stats in Python dictionaries instead of reading from database  
 ❌ Using raw SQL for Task 2 (ORM required)  
 ❌ Not handling edge cases (actor not found, ambiguous Wikipedia results)  

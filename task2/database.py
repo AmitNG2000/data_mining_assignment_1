@@ -1,8 +1,16 @@
 """
 Oscar Awards Database ORM using PonyORM
 """
+from pathlib import Path
 from pony.orm import Database, Required, Optional, Set, PrimaryKey, db_session, select
 from datetime import datetime
+
+
+BASE_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = BASE_DIR.parent
+DB_NAME = 'oscars.db'
+DB_PATH = BASE_DIR / DB_NAME
+CSV_PATH = PROJECT_ROOT / 'task2' / 'oscar_awards_full_data.csv'
 
 db = Database()
 
@@ -75,7 +83,7 @@ class Nomination(db.Entity):
         return f"Nomination({self.person.name}, {self.category.name}, {self.year}, {win_str})"
 
 
-def setup_database(filename='oscars.db', create_db=True):
+def setup_database(filename=DB_NAME, create_db=True):
     """
     Set up the database connection and create tables
     
@@ -83,8 +91,14 @@ def setup_database(filename='oscars.db', create_db=True):
         filename: SQLite database filename
         create_db: Whether to create the database if it doesn't exist
     """
-    db.bind(provider='sqlite', filename=filename, create_db=create_db)
-    db.generate_mapping(create_tables=True)
+    # Streamlit reruns can call setup multiple times in one process.
+    # Bind and map only once to avoid Pony's "already bound" error.
+    if db.provider is None:
+        db.bind(provider='sqlite', filename=str(filename), create_db=create_db)
+
+    if db.schema is None:
+        db.generate_mapping(create_tables=True)
+
     return db
 
 

@@ -10,7 +10,7 @@ from pathlib import Path
 BASE_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = BASE_DIR.parent
 DB_PATH = BASE_DIR / 'babynames.db'
-CSV_PATH = PROJECT_ROOT / 'data' / 'task1' / 'NationalNames.csv'
+CSV_PATH = BASE_DIR / 'NationalNames.csv'
 
 def create_database():
     """Create SQLite database and load data from CSV."""
