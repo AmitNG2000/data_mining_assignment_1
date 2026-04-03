@@ -36,10 +36,10 @@ This is a multi-page Streamlit application containing all tasks for Assignment 1
 - Wikipedia integration
 - Nomination and win analysis
 
-**Task 3: Pokémon Battle Arena** ⚔️ *(Coming Soon)*
-- Database-driven battle game
-- Cheat code system
-- Type effectiveness mechanics
+**Task 3: Pokémon Battle Arena** ⚔️
+- Database-driven battle game with 1025+ Pokémon
+- 6 cheat codes with SQL operations (UPDATE/INSERT)
+- Type effectiveness system and cheat detection
 
 **Task 4: SQL Learning Game** 🎮 *(Coming Soon)*
 - Interactive SQL tutorial

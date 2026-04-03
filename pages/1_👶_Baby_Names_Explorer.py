@@ -14,10 +14,12 @@ import pandas as pd
 import sys
 import os
 
-# Add task1 directory to path for imports
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(__file__)), 'task1'))
+# Ensure project root is on path for package-qualified imports
+project_root = os.path.dirname(os.path.dirname(__file__))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
 
-from utils import (
+from task1.utils import (
     get_name_popularity, 
     get_total_births_by_year, 
     execute_query, 

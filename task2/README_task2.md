@@ -4,6 +4,9 @@
 An interactive web application that explores Oscar nominations and wins, combining insights with Wikipedia data. Built with PonyORM, Streamlit, and the Wikipedia API.
 
 
+**Note**: See the [main README](../README.md) for installation instructions and more detailes.
+
+
 ## Features
 
 ### Actor Profile Search + Interesting Finds
