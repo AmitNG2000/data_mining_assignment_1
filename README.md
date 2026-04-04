@@ -4,7 +4,7 @@ A multi-page Streamlit application showcasing SQL, ORMs, and interactive data an
 
 ## 🌐 Live App
 
-**[View on Streamlit Cloud](https://amitng2000-data-mining-assignment-1-app-awappc.streamlit.app/SQL_Learning_Game)**
+**[View on Streamlit Cloud](https://amitng2000-data-mining-assignment-1-app-awappc.streamlit.app)**
 
 
 ## 📋 Tasks Details
