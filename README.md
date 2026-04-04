@@ -6,6 +6,10 @@ A multi-page Streamlit application showcasing SQL, ORMs, and interactive data an
 
 **[View on Streamlit Cloud](https://amitng2000-data-mining-assignment-1-app-awappc.streamlit.app)**
 
+## 💻 Code and Documentation (Github Repo)
+**[data_mining_assignment_1](https://github.com/AmitNG2000/data_mining_assignment_1.git)**
+
+
 
 ## 📋 Tasks Details
 
@@ -86,7 +90,3 @@ Open your browser to **http://localhost:8501**
 - **PonyORM** - ORM (Task 2)
 - **Plotly** - Interactive visualizations
 - **Wikipedia API** - External data integration (Task 2)
-
-
-## 💻 Code (Github)
-[data_mining_assignment_1](https://github.com/AmitNG2000/data_mining_assignment_1.git)
