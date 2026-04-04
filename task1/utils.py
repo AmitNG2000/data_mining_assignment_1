@@ -6,6 +6,8 @@ import sqlite3
 import pandas as pd
 from typing import Tuple, Optional
 from pathlib import Path
+from task1.database import create_database
+
 
 BASE_DIR = Path(__file__).resolve().parent
 DB_PATH = BASE_DIR / 'babynames.db'
@@ -26,7 +28,6 @@ def ensure_database_ready() -> Tuple[bool, str]:
         Tuple[bool, str]: (database_was_created, status_message)
     """
     if not DB_PATH.exists():
-        from database import create_database
         create_database()
         return True, "Database created successfully."
 
@@ -38,7 +39,6 @@ def ensure_database_ready() -> Tuple[bool, str]:
         cursor.execute("SELECT 1 FROM names LIMIT 1")
         return False, "Database is ready (no changes needed)."
     except sqlite3.Error:
-        from database import create_database
         create_database()
         return True, "Database was missing required schema and has been rebuilt."
     finally:
