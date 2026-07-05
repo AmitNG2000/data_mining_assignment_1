@@ -1,6 +1,6 @@
 # Data Mining Assignment 1
 
-A multi-page Streamlit application showcasing SQL, ORMs, and interactive data analysis through four distinct tasks.
+A multi-page Streamlit application using SQL, ORMs, and interactive data analysis through four distinct tasks.
 
 ## 🌐 Live App
 
@@ -17,12 +17,6 @@ A multi-page Streamlit application showcasing SQL, ORMs, and interactive data an
 - **[Task 2: Oscar Actor Explorer](task2/README_task2.md)** - ORM-powered actor profiles with Wikipedia integration
 - **[Task 3: Pokémon Battle Arena](task3/README_task3.md)** - Database-driven battle game with cheat codes
 - **[Task 4: SQL Learning Game](task4/README_task4.md)** - Interactive platform for learning SQL
-
-
-
-## 🤠 Understanding Requirement
-Written explanation without LLM assistance: [no_llm_explanation](no_llm_explanation.md)
-
 
 
 ## 🗂️ Project Structure
